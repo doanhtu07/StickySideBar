@@ -43,8 +43,10 @@ export default Demo;
 
 ## Props of StickySideBar
 
-| Props       | Type        | Description                                                                                                                 |
-| ----------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
-| topSpace    | number      | **(in pixels)** Determine how much space between the content's **top** and screen's **top** when scrolling **up**.          |
-| bottomSpace | number      | **(in pixels)** Determine how much space between the content's **bottom** and screen's **bottom** when scrolling **down**.  |
+| Props                | Type        | Description                                                                                                                 |
+| -------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| topSpace             | number      | **(in pixels)** Determine how much space between the content's **top** and screen's **top** when scrolling **up**.          |
+| bottomSpace          | number      | **(in pixels)** Determine how much space between the content's **bottom** and screen's **bottom** when scrolling **down**.  |
+| turnOff (optional)   | boolean     | Turn off sticky mode -> Become a normal div                                                                                 |
+| maxHeight (optional) | number      | Set max height of sticky div                                                                                                |
 
