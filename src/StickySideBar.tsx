@@ -1,5 +1,5 @@
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import {
   BoundingClientRectNumberPropertyName,
   getRectNumberProperty,
@@ -30,7 +30,7 @@ type Props = WithStyles<typeof styles> & {
   bottomSpace: number;
 };
 
-class StickySideBar extends React.Component<Props> {
+class StickySideBar extends React.Component<PropsWithChildren<Props>> {
   mContentDivRef = React.createRef<HTMLDivElement>();
   mSpaceDivRef = React.createRef<HTMLDivElement>();
   mStickyDivParentRef = React.createRef<HTMLDivElement>();
@@ -225,7 +225,7 @@ class StickySideBar extends React.Component<Props> {
         ref={mStickyDivParentRef}
         className={classes.stickyDivParent}
         style={{
-          maxHeight
+          maxHeight,
         }}
       >
         <div ref={mSpaceDivRef} className={classes.spaceDiv} />
