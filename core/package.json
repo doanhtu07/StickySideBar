@@ -1,5 +1,5 @@
 {
-  "name": "sticky-side-bar",
+  "name": "sticky-n-scroll",
   "description": "An extended behavior for sticky div.",
   "author": "Anh Tu Do",
   "keywords": [
@@ -9,10 +9,9 @@
   ],
   "version": "0.1.0",
   "private": false,
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "src/index.tsx",
   "files": [
-    "dist",
+    "src",
     "README.md"
   ],
   "repository": {
