@@ -2,12 +2,13 @@
   "name": "sticky-n-scroll",
   "description": "An extended behavior for sticky div.",
   "author": "Anh Tu Do",
+  "license": "MIT",
   "keywords": [
     "react",
     "components",
     "ui"
   ],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "main": "src/index.tsx",
   "files": [
