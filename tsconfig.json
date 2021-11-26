@@ -1,26 +1,47 @@
 {
+  // "compilerOptions": {
+  //   "target": "ES6",
+  //   "lib": ["dom", "dom.iterable", "esnext"],
+
+  //   // Allow importing like `import React from 'react'`
+  //   "allowSyntheticDefaultImports": true,
+
+  //   // Use ESNext module system
+  //   "module": "esnext",
+
+  //   // Set React as the JSX factory
+  //   "jsx": "react",
+
+  //   // Include module source maps for debugging
+  //   "sourceMap": true
+  // },
+
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "src",
     "outDir": "dist",
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
+
+    "module": "esnext",
+    "sourceMap": true,
+
+    "strict": true,
     "allowJs": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
 
     // Ensure that .d.ts files are created by tsc, but not .js files
     "declaration": true,
-    "emitDeclarationOnly": true,
     // Ensure that Babel can safely transpile files in the TypeScript project
-    "isolatedModules": true
+    "isolatedModules": true,
+    "declarationDir": "dist/@types"
   },
-  "include": ["src"]
+
+  "include": ["src"],
+
+  "exclude": ["node_modules", "dist"]
 }
