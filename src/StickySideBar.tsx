@@ -1,36 +1,38 @@
-import { createStyles, withStyles, WithStyles } from "@mui/styles";
-import React, { PropsWithChildren } from "react";
+import withStyles, { WithStylesProps } from "react-jss";
+import React from "react";
 import {
   BoundingClientRectNumberPropertyName,
   getRectNumberProperty,
   setCSSHTMLReference,
 } from "./utils";
+import { StickySideBar_ID } from ".";
 
 const { HEIGHT, TOP, BOTTOM } = BoundingClientRectNumberPropertyName;
 
-const styles = () =>
-  createStyles({
-    spaceDiv: {
-      minHeight: 0,
-    },
-    stickyContainer: {
-      position: "sticky",
-    },
-    stickyDivParent: {
-      position: "relative",
-      height: "100%",
-      flexGrow: 1,
-    },
-  });
+const styles = () => ({
+  spaceDiv: {
+    minHeight: 0,
+  },
+  stickyContainer: {
+    position: "sticky",
+  },
+  stickyDivParent: {
+    position: "relative",
+    height: "100%",
+    width: "100%",
+    flexGrow: 1,
+  },
+});
 
-type Props = WithStyles<typeof styles> & {
-  maxHeight?: number;
-  turnOff?: boolean;
+type Props = WithStylesProps<typeof styles> & {
   topSpace: number;
   bottomSpace: number;
+
+  turnOff?: boolean;
+  initialSpaceDivHeight?: number;
 };
 
-class StickySideBar extends React.Component<PropsWithChildren<Props>> {
+class StickySideBar extends React.Component<Props> {
   mContentDivRef = React.createRef<HTMLDivElement>();
   mSpaceDivRef = React.createRef<HTMLDivElement>();
   mStickyDivParentRef = React.createRef<HTMLDivElement>();
@@ -48,8 +50,15 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { turnOff } = this.props;
-    const { turnOff: prevTurnOff } = prevProps;
+    const { turnOff, initialSpaceDivHeight } = this.props;
+    const {
+      turnOff: prevTurnOff,
+      initialSpaceDivHeight: prevInitialSpaceDivHeight,
+    } = prevProps;
+
+    if (initialSpaceDivHeight !== prevInitialSpaceDivHeight) {
+      this.setupHeightForSpaceDiv();
+    }
 
     if (turnOff !== prevTurnOff) {
       if (turnOff) {
@@ -57,8 +66,7 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
           "scroll",
           this.setStyleContentDivAndSpaceDiv
         );
-      } //
-      else {
+      } else {
         document.addEventListener("scroll", this.setStyleContentDivAndSpaceDiv);
       }
     }
@@ -68,12 +76,12 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
     document.removeEventListener("scroll", this.setStyleContentDivAndSpaceDiv);
   }
 
+  // Check if content hitting top or bottom limit
   isContentHittingTopLimit = (): boolean => {
     const { mContentDivRef } = this;
     const { topSpace } = this.props;
-    return getRectNumberProperty(mContentDivRef, TOP) - topSpace === 0;
+    return getRectNumberProperty(mContentDivRef, TOP) - topSpace <= 0;
   };
-
   isContentHittingBottomLimit = (): boolean => {
     const { mContentDivRef } = this;
     const { bottomSpace } = this.props;
@@ -84,6 +92,7 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
     );
   };
 
+  // Check if content hits the top of parent
   isContentAtTopOfStickyParent = (): boolean => {
     const { mContentDivRef, mSpaceDivRef } = this;
     return (
@@ -91,12 +100,6 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
         getRectNumberProperty(mSpaceDivRef, TOP) <
       1
     );
-  };
-
-  isContentBelowTopLimit = (): boolean => {
-    const { mContentDivRef } = this;
-    const { topSpace } = this.props;
-    return getRectNumberProperty(mContentDivRef, TOP) - topSpace > 0;
   };
 
   calculateMaxSpaceDivHeight = (): number => {
@@ -121,11 +124,15 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
 
   handleScrollingDown = () => {
     const { mContentDivRef, mSpaceDivRef } = this;
-    const { bottomSpace } = this.props;
+    const { bottomSpace, topSpace, initialSpaceDivHeight } = this.props;
 
-    if (this.isContentBelowTopLimit()) {
+    // When we set initial space div height and start scrolling, remember to set height back to zero.
+    const isContentDivSmallerThanViewport =
+      getRectNumberProperty(mContentDivRef, HEIGHT) <
+      window.innerHeight - (topSpace + bottomSpace);
+
+    if (isContentDivSmallerThanViewport && initialSpaceDivHeight) {
       setCSSHTMLReference(mSpaceDivRef, { height: 0 });
-      setCSSHTMLReference(mContentDivRef, { bottom: "unset", top: "unset" });
       return;
     }
 
@@ -134,12 +141,11 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
     }
 
     const extraBottomSpaceAddingToTop =
-      getRectNumberProperty(mContentDivRef, BOTTOM) + bottomSpace;
+      window.innerHeight -
+      (getRectNumberProperty(mContentDivRef, BOTTOM) + bottomSpace);
 
     const newTop =
-      getRectNumberProperty(mContentDivRef, TOP) +
-      window.innerHeight -
-      extraBottomSpaceAddingToTop;
+      getRectNumberProperty(mContentDivRef, TOP) + extraBottomSpaceAddingToTop;
 
     setCSSHTMLReference(mContentDivRef, {
       top: `${newTop}px`,
@@ -149,7 +155,17 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
 
   handleScrollingUp = () => {
     const { mContentDivRef, mSpaceDivRef } = this;
-    const { topSpace } = this.props;
+    const { bottomSpace, topSpace, initialSpaceDivHeight } = this.props;
+
+    // When we set initial space div height and start scrolling, remember to set height back to zero.
+    const isContentDivSmallerThanViewport =
+      getRectNumberProperty(mContentDivRef, HEIGHT) <
+      window.innerHeight - (topSpace + bottomSpace);
+
+    if (isContentDivSmallerThanViewport && initialSpaceDivHeight) {
+      setCSSHTMLReference(mSpaceDivRef, { height: 0 });
+      return;
+    }
 
     if (this.isContentAtTopOfStickyParent()) {
       setCSSHTMLReference(mSpaceDivRef, { height: 0 });
@@ -161,11 +177,13 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
       this.setHeightSpaceDiv();
     }
 
+    const extraTopSpaceAddingToBottom =
+      getRectNumberProperty(mContentDivRef, TOP) - topSpace;
+
     const newBottom =
       window.innerHeight -
       getRectNumberProperty(mContentDivRef, BOTTOM) +
-      getRectNumberProperty(mContentDivRef, TOP) -
-      topSpace;
+      extraTopSpaceAddingToBottom;
 
     setCSSHTMLReference(mContentDivRef, {
       bottom: `${newBottom}px`,
@@ -175,7 +193,7 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
 
   setStyleContentDivAndSpaceDiv = () => {
     const { mContentDivRef } = this;
-    const { topSpace, bottomSpace } = this.props;
+    const { topSpace, bottomSpace, initialSpaceDivHeight } = this.props;
 
     // https://stackoverflow.com/questions/31223341/detecting-scroll-direction
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -193,8 +211,8 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
         top: topSpace,
       });
     }
-    //
-    else {
+
+    if (!isContentDivSmallerThanViewport || initialSpaceDivHeight) {
       if (isScrollingDown) {
         this.handleScrollingDown();
       }
@@ -209,28 +227,38 @@ class StickySideBar extends React.Component<PropsWithChildren<Props>> {
   };
 
   setupHeightForSpaceDiv = () => {
+    const { initialSpaceDivHeight } = this.props;
     const { mSpaceDivRef } = this;
+
     setCSSHTMLReference(mSpaceDivRef, {
-      height: 0,
-      maxHeight: `${this.calculateMaxSpaceDivHeight()}px`,
+      height: initialSpaceDivHeight ?? 0,
+      maxHeight: `${
+        initialSpaceDivHeight ?? this.calculateMaxSpaceDivHeight()
+      }px`,
     });
   };
 
   render(): JSX.Element {
-    const { classes, maxHeight } = this.props;
+    const { classes } = this.props;
     const { mContentDivRef, mSpaceDivRef, mStickyDivParentRef } = this;
 
     return (
       <div
+        id={StickySideBar_ID.PARENT}
         ref={mStickyDivParentRef}
         className={classes.stickyDivParent}
-        style={{
-          maxHeight,
-        }}
       >
-        <div ref={mSpaceDivRef} className={classes.spaceDiv} />
+        <div
+          id={StickySideBar_ID.SPACE}
+          ref={mSpaceDivRef}
+          className={classes.spaceDiv}
+        />
 
-        <div ref={mContentDivRef} className={classes.stickyContainer}>
+        <div
+          id={StickySideBar_ID.CONTENT}
+          ref={mContentDivRef}
+          className={classes.stickyContainer}
+        >
           {this.props.children}
         </div>
       </div>

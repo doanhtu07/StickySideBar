@@ -1,21 +1,4 @@
 {
-  // "compilerOptions": {
-  //   "target": "ES6",
-  //   "lib": ["dom", "dom.iterable", "esnext"],
-
-  //   // Allow importing like `import React from 'react'`
-  //   "allowSyntheticDefaultImports": true,
-
-  //   // Use ESNext module system
-  //   "module": "esnext",
-
-  //   // Set React as the JSX factory
-  //   "jsx": "react",
-
-  //   // Include module source maps for debugging
-  //   "sourceMap": true
-  // },
-
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
