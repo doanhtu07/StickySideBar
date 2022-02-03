@@ -4,11 +4,11 @@ A **React** sticky component that can stick to top when scrolling up and can sti
 
 ## Demo
 
-
-
 https://user-images.githubusercontent.com/55064969/143556256-2f143e35-1895-4cd1-9e80-af040c7e1c12.mov
 
+## CodeSandbox Demo
 
+https://codesandbox.io/s/test-sticky-n-scroll-qr1p3
 
 ## Setup
 
