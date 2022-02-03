@@ -41,6 +41,16 @@ class Demo extends React.Components {
 export default Demo;
 ```  
 
+## Extra Power
+
+Now you can freely manipulate StickySideBar with StickySideBar_ID: `imported { StickySideBar_ID } from "sticky-n-scroll"`
+
+There are 3 main parts of StickySideBar: **Parent**, **Space**, **Content**. These 3 parts are all div with id equals to corresponding StickySideBar_ID values. You can either use jQuery or any DOM manipulations (such as ResizeObserver, etc.) to get to these elements by ids.
+
+## Important Note
+
+In order for StickySideBar to be able to scroll, **Parent** should have larger height than **Content**.
+
 ## Props of StickySideBar
 
 | Props                | Type        | Description                                                                                                                 |
@@ -48,5 +58,5 @@ export default Demo;
 | topSpace             | number      | **(in pixels)** Determine how much space between the content's **top** and screen's **top** when scrolling **up**.          |
 | bottomSpace          | number      | **(in pixels)** Determine how much space between the content's **bottom** and screen's **bottom** when scrolling **down**.  |
 | turnOff (optional)   | boolean     | Turn off sticky mode -> Become a normal div                                                                                 |
-| maxHeight (optional) | number      | Set max height of sticky div                                                                                                |
+| initialSpaceDivHeight (optional) | number | Force initial height of space div when StickySideBar mounts |
 
