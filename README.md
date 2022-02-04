@@ -2,6 +2,16 @@
 
 A **React** sticky component that can stick to top when scrolling up and can stick to bottom when scrolling down.
 
+## Support
+
+If you like the project, don't forget to give a star.
+
+If you have any issues, post them on Github.
+
+**Github** | https://github.com/doanhtu07/StickySideBar
+
+Thank you!
+
 ## Demo
 
 https://user-images.githubusercontent.com/55064969/143556256-2f143e35-1895-4cd1-9e80-af040c7e1c12.mov
